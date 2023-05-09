@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{user.first_name}} {{user.last_name}} {% endblock %}
+{% block style %}
+<link href="{% static 'css/account/account.css' %}" rel="stylesheet">
+<link href="{% static 'css/account/id.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+  {% include 'menu.html' %}
+
+  <div class="container-fluid text-center">
+    <div class="row content">
+      <div class="col-md-2 sidenav">
+        <h3 class="wordwrap textowerflow">{{user.first_name}} {{user.last_name}}</h3>
+        {% if user.profile.avatar %}
+          <p><a href="{% url 'account:account_setting' %}" title="Изменить"><img class="img-thumbnail" src="{{ user.profile.avatar.url }}" width="100%" alt="{{ user.username }}" ></a></p>
+        {% endif %}
+        <p class="wordwrap textowerflow">
+          {% if user.profile.birth_date %}
+            {{ user.profile.birth_date }}
+          <br>
+          {% endif %}
+          {% if user.profile.city %}
+            {{ user.profile.city}}
+          {% endif %}
+        </p>
+        <div class="category-wrap">
+          <ul>
+            <li><a href="{% url 'account:account_setting' %}">Настроить</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Ваш пост</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="post" enctype="multipart/form-data" class="text-left" id="ctrate_post">
+                {% csrf_token %}
+                {% for field in form %}
+                 <div class="form-group">
+                  {{ field.label_tag}} {{field}}
+                 </div>
+                {% endfor %}
+               <input type="submit" name="action" value="Создать" class="btn btn-block btn-primary">
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Отмена</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        $('#modalwin').on('click', function(e) {
+          e.preventDefault();
+          $("#exampleModal").modal('show');
+        });
+      </script>
+
+
+      <div class="col-md-2 sidenav">
+
+      </div>
+    </div>
+  </div>
+
+<script src="{% static 'js/account/create_post.js' %}" charset="utf-8">
+</script>
+
+{% endblock %}

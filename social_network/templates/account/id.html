@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} {{other_user.first_name}} {{other_user.last_name}} {% endblock %}
+
+{% block style %}
+<link href="{% static 'css/account/id.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+{% include 'menu.html' %}
+<div class="container-fluid text-center">
+  <div class="row content">
+    <div class="col-md-2 sidenav">
+         <h3 class="wordwrap textowerflow">{{other_user.first_name}} {{other_user.last_name}}</h3>
+       {% if other_user.profile.avatar %}
+         <p><img  class="img-thumbnail" src="{{ other_user.profile.avatar.url }}" width="100%" alt="{{ other_user.username }}" ></p>
+       {% endif %}
+       <p class="wordwrap textowerflow">
+         {% if other_user.profile.birth_date %}
+           {{ other_user.profile.birth_date }}
+         <br>
+         {% endif %}
+         {% if other_user.profile.city %}
+           {{ other_user.profile.city}}
+         {% endif %}
+       </p>
+        {% if other_user.status.online %}
+          <p class="text-primary">{{ other_user.status.get_online_status }}</p>
+        {% endif %}
+       <div class="category-wrap">
+         <ul>
+           {% if is_friend %}
+            <li><a href="{% url 'account:add_friend' other_user.id %}">Добавить в друзья</a></li>
+           {% else %}
+           <li><a href="{% url 'account:delete_friend' other_user.id %}">Удалить из друзей</a></li>
+           {% endif %}
+
+         </ul>
+       </div>
+         <div class="category-wrap">
+           <h6>Друзья</h6>
+           <div>
+             {% for friend in friends1 %}
+               <div class="friend_block">
+                 <a href="{% url 'account:account' friend.users_friend.id %}"><img src="{{ friend.users_friend.profile.avatar.url }}" alt="{{ friend.users_friend.username }}" class="rounded-circle w-100"></a>
+                   <h4 class="card-title wordwrap textowerflow"><a href="{% url 'account:account' friend.users_friend.id %}">
+                   {{ friend.users_friend.first_name }} {{ friend.users_friend.last_name }}</a></h4>
+               </div>
+             {% endfor %}
+             {% for friend in friends2 %}
+               <div class="friend_block">
+                 <a href="{% url 'account:account' friend.user.id %}"><img src="{{ friend.user.profile.avatar.url }}" alt="{{ friend.user.username }}" class="rounded-circle w-100"></a>
+                   <h4 class="card-title wordwrap textowerflow"><a href="{% url 'account:account' friend.user.id %}">
+                   {{ friend.user.first_name }} {{ friend.user.last_name }}</a></h4>
+               </div>
+             {% endfor %}
+           </div>
+         </div>
+       </div>
+    <div class="col-md-2 sidenav">
+
+    </div>
+  </div>
+</div>
+{% endblock %}
